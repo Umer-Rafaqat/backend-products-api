@@ -1,6 +1,7 @@
 // index.js
 const express = require("express");
 const productsRouter = require("./routes/products");
+require("./config/firestore");
 
 const app = express();
 const PORT = process.env.PORT || 5000;

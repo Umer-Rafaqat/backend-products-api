@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../config/firestore");
+const db = require("../config/firebase");
 
 // POST → Create a product
 router.post("/", async (req, res) => {

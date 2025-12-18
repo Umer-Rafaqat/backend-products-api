@@ -1,20 +1,43 @@
-const express = require("express");
-require("dotenv").config(); // ✅ Load .env variables
-require("./config/firebase"); // 🔥 Initialize Firebase
+// MUST BE AT THE TOP - Before any other requires
+require("dotenv").config();
 
-const customersRoutes = require("./routes/customers.routes");
-const appointmentsRoutes = require("./routes/appointments.routes");
+const express = require("express");
+const authRoutes = require("./routes/authRoutes");
+const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
-const PORT = process.env.PORT || 5000; // ✅ Use env PORT
 
+// Middleware
 app.use(express.json());
 
-app.use("/customers", customersRoutes);
-app.use("/appointments", appointmentsRoutes);
+// Routes
+app.use("/auth", authRoutes);
 
-app.get("/", (req, res) => res.send("Appointment Manager API running"));
+// Health check
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Salon Management System - Authentication API",
+    version: "1.0.0",
+    endpoints: {
+      register: "POST /auth/register",
+      login: "POST /auth/login",
+    },
+  });
+});
 
+// Error handling middleware
+app.use(errorHandler);
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    error: "Not found",
+    details: "Endpoint does not exist",
+  });
+});
+
+// Start server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Salon Management System API running on port ${PORT}`);
 });
